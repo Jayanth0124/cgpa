@@ -1,9 +1,10 @@
 const CACHE_NAME = 'simats-cgpa-v1';
 const urlsToCache = [
   '/',
-  '/src/main.tsx',
-  '/src/App.tsx',
-  '/src/index.css'
+  '/index.html',
+  '/logo2.png',
+  '/manifest.json',
+  // Add other static assets or built JS/CSS files if known
 ];
 
 self.addEventListener('install', (event) => {
