@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta name="description"
+    content="Calculate your CGPA accurately with the SIMATS Engineering CGPA Calculator. Fast, mobile-ready, and export-friendly academic tool." />
+
+  <meta name="keywords"
+    content="SIMATS, CGPA Calculator, Engineering CGPA, College GPA Tool, Academic Calculator, Student GPA, SGPA" />
+
+  <meta name="author" content="Donavalli Jayanth" />
+
+  <meta name="theme-color" content="#0f172a" />
+
+  <link rel="canonical" href="https://simatscgpa.netlify.app/" />
+
+  <!-- Open Graph / Facebook -->
+
+  <meta property="og:type" content="website" />
+
+  <meta property="og:url" content="https://simatscgpa.netlify.app/" />
+
+  <meta property="og:title" content="SIMATS CGPA Calculator" />
+
+  <meta property="og:description"
+    content="Premium CGPA calculator for SIMATS Engineering students. Fast, accurate, exportable academic tool." />
+
+  <meta property="og:image" content="https://simatscgpa.netlify.app/logo2.png" />
+
+  <!-- Twitter -->
+
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <meta name="twitter:url" content="https://simatscgpa.netlify.app/" />
+
+  <meta name="twitter:title" content="SIMATS CGPA Calculator" />
+
+  <meta name="twitter:description" content="Premium CGPA calculator for SIMATS Engineering students." />
+
+  <meta name="twitter:image" content="https://simatscgpa.netlify.app/logo2.png" />
+
+  <!-- PWA -->
+
+  <link rel="manifest" href="/manifest.json" />
+
+  <link rel="apple-touch-icon" href="/icons/apple-icon-180.png" />
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <meta name="mobile-web-app-capable" content="yes" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/logo2.png" />
+
+  <!-- Removed other favicon links to use only logo2.png as favicon -->
+  <!-- <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" /> -->
+
+  <!-- <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" /> -->
+
+  <!-- <link rel="shortcut icon" href="/favicon.ico" /> -->
+
+  <!-- Fonts -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Title -->
+  <title>SIMATS CGPA Calculator</title>
+
+  <!-- Service Worker -->
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js');
+      });
+    }
+  </script>
+
+</head>
+
+
+<body>
+  <div id="root"></div>
+
+  <script type="module" src="/src/main.tsx"></script>
+
+</body>
+
+</html>
