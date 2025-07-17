@@ -1,7 +1,7 @@
 {
   "name": "SIMATS CGPA Calculator",
-  "short_name": "CGPA Calc",
-  "description": "Premium CGPA Calculator for SIMATS Engineering Students",
+  "short_name": "CGPA",
+  "description": "CGPA Calculator for SIMATS Engineering Students",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f172a",
