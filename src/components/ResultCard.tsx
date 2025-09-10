@@ -34,7 +34,6 @@ const ResultCard: React.FC<ResultCardProps> = ({
 
   return (
     <div>
-      {/* Export-friendly result display */}
       <div id="export-content" className="backdrop-blur-xl bg-white/5 rounded-3xl p-8 border border-white/10 hover:border-white/20 transition-all duration-500 shadow-2xl">
         <div className="text-center mb-8">
           <h3 className="text-3xl font-bold text-white mb-3">CGPA Result</h3>
@@ -46,6 +45,7 @@ const ResultCard: React.FC<ResultCardProps> = ({
             percentage={(cgpa / 10) * 100} 
             size={160} 
             strokeWidth={10} 
+            label="CGPA Score"
             className="flex-shrink-0"
           />
           
@@ -63,7 +63,6 @@ const ResultCard: React.FC<ResultCardProps> = ({
         </div>
       </div>
 
-      {/* Buttons outside export content */}
       <div className="mt-8 flex flex-col sm:flex-row gap-4">
         <button
           onClick={onDownloadPDF}

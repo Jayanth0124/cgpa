@@ -1,8 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Calculator, GraduationCap, Smartphone, Download, Award, BookOpen } from 'lucide-react';
+import { Calculator, Smartphone, Download, Award, CalendarCheck } from 'lucide-react';
 import GradeInput from './components/GradeInput';
 import ResultCard from './components/ResultCard';
+// --- Additions Start ---
+import AttendanceInput from './components/AttendanceInput';
+import AttendanceResultCard from './components/AttendanceResultCard';
+import TabButton from './components/TabButton';
+// --- Additions End ---
 import { downloadPDF, downloadImage } from './utils/exportUtils';
+
+// --- Additions Start ---
+type CalculatorMode = 'cgpa' | 'attendance';
+// --- Additions End ---
 
 function App() {
   const [grades, setGrades] = useState({
@@ -19,6 +28,15 @@ function App() {
   const [showResult, setShowResult] = useState(false);
   const [isInstallable, setIsInstallable] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+  // --- Additions Start ---
+  const [attendedClasses, setAttendedClasses] = useState(0);
+  const [totalClasses, setTotalClasses] = useState(0);
+  const [attendancePercentage, setAttendancePercentage] = useState(0);
+  const [showAttendanceResult, setShowAttendanceResult] = useState(false);
+
+  const [mode, setMode] = useState<CalculatorMode>('cgpa');
+  // --- Additions End ---
 
   const gradePoints = {
     S: 10,
@@ -58,17 +76,17 @@ function App() {
 
   const calculateCGPA = () => {
     let totalPoints = 0;
-    let totalSubjects = 0;
+    let totalSubjectsCount = 0;
 
     Object.entries(grades).forEach(([grade, count]) => {
       totalPoints += gradePoints[grade as keyof typeof gradePoints] * count;
-      totalSubjects += count;
+      totalSubjectsCount += count;
     });
 
-    if (totalSubjects > 0) {
-      const calculatedCgpa = totalPoints / totalSubjects;
+    if (totalSubjectsCount > 0) {
+      const calculatedCgpa = totalPoints / totalSubjectsCount;
       setCgpa(calculatedCgpa);
-      setTotalSubjects(totalSubjects);
+      setTotalSubjects(totalSubjectsCount);
       setShowResult(true);
     }
   };
@@ -86,6 +104,25 @@ function App() {
     setTotalSubjects(0);
     setShowResult(false);
   };
+
+  // --- Additions Start ---
+  const calculateAttendance = () => {
+    if (totalClasses > 0 && attendedClasses <= totalClasses) {
+      const percentage = (attendedClasses / totalClasses) * 100;
+      setAttendancePercentage(percentage);
+      setShowAttendanceResult(true);
+    } else if (attendedClasses > totalClasses) {
+      alert("Attended classes cannot be more than total classes.");
+    }
+  };
+
+  const resetAttendanceForm = () => {
+    setAttendedClasses(0);
+    setTotalClasses(0);
+    setAttendancePercentage(0);
+    setShowAttendanceResult(false);
+  };
+  // --- Additions End ---
 
   const handleDownloadPDF = () => {
     downloadPDF(cgpa, totalSubjects, grades);
@@ -139,22 +176,23 @@ function App() {
                 />
               </div>
 
-
-
+              {/* --- Title Updated --- */}
               <h1 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-indigo-400 mb-3 tracking-tight">
-
+                SIMATS ACADEMIC TOOLKIT
               </h1>
 
+              {/* --- Subtitle Updated --- */}
               <div className="flex items-center justify-center space-x-2 mb-4">
                 <Award className="text-amber-400" size={20} />
                 <p className="text-lg md:text-xl text-gray-300 font-light">
-                  Academic Excellence Calculator
+                  Academic Excellence Tools
                 </p>
                 <Award className="text-amber-400" size={20} />
               </div>
 
+              {/* --- Description Updated --- */}
               <p className="text-gray-400 text-base max-w-xl mx-auto leading-relaxed mb-6">
-                Calculate your Cumulative Grade Point Average with precision and export professional academic reports
+                Calculate your CGPA and track your attendance with precision.
               </p>
 
               {/* PWA Install Button */}
@@ -172,110 +210,151 @@ function App() {
                   </button>
                 </div>
               )}
-
-              {/* Academic Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
-                <div className="backdrop-blur-xl bg-white/5 rounded-xl p-4 border border-white/10 hover:border-white/20 transition-all duration-300">
-                  <BookOpen className="text-blue-400 mx-auto mb-2" size={24} />
-                  <div className="text-lg font-bold text-white mb-1">Grade System</div>
-                  <div className="text-gray-400 text-sm">S, A, B, C, D, E</div>
-                </div>
-                <div className="backdrop-blur-xl bg-white/5 rounded-xl p-4 border border-white/10 hover:border-white/20 transition-all duration-300">
-                  <Calculator className="text-purple-400 mx-auto mb-2" size={24} />
-                  <div className="text-lg font-bold text-white mb-1">Precision</div>
-                  <div className="text-gray-400 text-sm">Accurate CGPA</div>
-                </div>
-                <div className="backdrop-blur-xl bg-white/5 rounded-xl p-4 border border-white/10 hover:border-white/20 transition-all duration-300">
-                  <Download className="text-emerald-400 mx-auto mb-2" size={24} />
-                  <div className="text-lg font-bold text-white mb-1">Export</div>
-                  <div className="text-gray-400 text-sm">PDF & Image</div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
 
         {/* Main Calculator Section */}
         <div className="container mx-auto px-4 py-12">
+          {/* --- Tabs Added --- */}
+          <div className="flex justify-center gap-4 mb-12">
+              <TabButton label="CGPA Calculator" isActive={mode === 'cgpa'} onClick={() => setMode('cgpa')} />
+              <TabButton label="Attendance Calculator" isActive={mode === 'attendance'} onClick={() => setMode('attendance')} />
+          </div>
+
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
-              {/* Input Section */}
-              <div className="space-y-8">
-                <div className="backdrop-blur-xl bg-white/5 rounded-3xl p-8 border border-white/10 hover:border-white/20 transition-all duration-500 shadow-2xl">
-                  <div className="flex items-center space-x-3 mb-8">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                      <Calculator className="text-white" size={24} />
-                    </div>
-                    <div>
-                      <h2 className="text-2xl font-bold text-white">Grade Input</h2>
-                      <p className="text-gray-400 text-sm">Enter number of subjects for each grade</p>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    {Object.entries(grades).map(([grade, value]) => (
-                      <GradeInput
-                        key={grade}
-                        grade={grade}
-                        points={gradePoints[grade as keyof typeof gradePoints]}
-                        value={value}
-                        onChange={(newValue) => handleGradeChange(grade as keyof typeof grades, newValue)}
-                        color={gradeColors[grade as keyof typeof gradeColors]}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <button
-                    onClick={calculateCGPA}
-                    className="group relative flex-1 overflow-hidden bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-600 hover:from-blue-600 hover:via-purple-600 hover:to-indigo-700 text-white font-bold py-5 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-2xl"
-                  >
-                    <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
-                    <div className="relative flex items-center justify-center space-x-2">
-                      <Calculator size={20} />
-                      <span className="text-lg">Calculate CGPA</span>
-                    </div>
-                  </button>
-
-                  <button
-                    onClick={resetForm}
-                    className="flex-1 backdrop-blur-xl bg-white/10 hover:bg-white/20 text-white font-semibold py-5 px-8 rounded-2xl transition-all duration-300 border border-white/20 hover:border-white/40"
-                  >
-                    Reset All
-                  </button>
-                </div>
-              </div>
-
-              {/* Result Section */}
-              <div className="space-y-8">
-                {showResult && (
-                  <div className="transform transition-all duration-700 ease-out animate-in slide-in-from-right">
-                    <ResultCard
-                      cgpa={cgpa}
-                      totalSubjects={totalSubjects}
-                      onReset={resetForm}
-                      onDownloadPDF={handleDownloadPDF}
-                      onDownloadImage={handleDownloadImage}
-                    />
-                  </div>
-                )}
-
-                {!showResult && (
-                  <div className="backdrop-blur-xl bg-white/5 rounded-3xl p-16 border border-white/10 text-center shadow-2xl">
-                    <div className="text-gray-400 mb-6">
-                      <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full flex items-center justify-center">
-                        <Calculator size={48} className="opacity-50" />
+            {/* --- CGPA Calculator View --- */}
+            {mode === 'cgpa' && (
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
+                {/* Input Section */}
+                <div className="space-y-8">
+                  <div className="backdrop-blur-xl bg-white/5 rounded-3xl p-8 border border-white/10 hover:border-white/20 transition-all duration-500 shadow-2xl">
+                    <div className="flex items-center space-x-3 mb-8">
+                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                        <Calculator className="text-white" size={24} />
                       </div>
-                      <h3 className="text-2xl font-semibold mb-4 text-white">Ready to Calculate</h3>
-                      <p className="text-gray-400 max-w-md mx-auto leading-relaxed">
-                        Enter your grades and click "Calculate CGPA" to generate your academic performance report
-                      </p>
+                      <div>
+                        <h2 className="text-2xl font-bold text-white">Grade Input</h2>
+                        <p className="text-gray-400 text-sm">Enter number of subjects for each grade</p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      {Object.entries(grades).map(([grade, value]) => (
+                        <GradeInput
+                          key={grade}
+                          grade={grade}
+                          points={gradePoints[grade as keyof typeof gradePoints]}
+                          value={value}
+                          onChange={(newValue) => handleGradeChange(grade as keyof typeof grades, newValue)}
+                          color={gradeColors[grade as keyof typeof gradeColors]}
+                        />
+                      ))}
                     </div>
                   </div>
-                )}
+
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <button
+                      onClick={calculateCGPA}
+                      className="group relative flex-1 overflow-hidden bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-600 hover:from-blue-600 hover:via-purple-600 hover:to-indigo-700 text-white font-bold py-5 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-2xl"
+                    >
+                      <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+                      <div className="relative flex items-center justify-center space-x-2">
+                        <Calculator size={20} />
+                        <span className="text-lg">Calculate CGPA</span>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={resetForm}
+                      className="flex-1 backdrop-blur-xl bg-white/10 hover:bg-white/20 text-white font-semibold py-5 px-8 rounded-2xl transition-all duration-300 border border-white/20 hover:border-white/40"
+                    >
+                      Reset All
+                    </button>
+                  </div>
+                </div>
+
+                {/* Result Section */}
+                <div className="space-y-8">
+                  {showResult ? (
+                    <div className="transform transition-all duration-700 ease-out animate-in slide-in-from-right">
+                      <ResultCard
+                        cgpa={cgpa}
+                        totalSubjects={totalSubjects}
+                        onReset={resetForm}
+                        onDownloadPDF={handleDownloadPDF}
+                        onDownloadImage={handleDownloadImage}
+                      />
+                    </div>
+                  ) : (
+                    <div className="backdrop-blur-xl bg-white/5 rounded-3xl p-16 border border-white/10 text-center shadow-2xl">
+                      <div className="text-gray-400 mb-6">
+                        <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full flex items-center justify-center">
+                          <Calculator size={48} className="opacity-50" />
+                        </div>
+                        <h3 className="text-2xl font-semibold mb-4 text-white">Ready to Calculate</h3>
+                        <p className="text-gray-400 max-w-md mx-auto leading-relaxed">
+                          Enter your grades and click "Calculate CGPA" to generate your academic performance report
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
+            
+            {/* --- Attendance Calculator View Added --- */}
+            {mode === 'attendance' && (
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
+                    {/* Input Section */}
+                    <div className="space-y-8">
+                        <div className="backdrop-blur-xl bg-white/5 rounded-3xl p-8 border border-white/10 hover:border-white/20 transition-all duration-500 shadow-2xl">
+                            <div className="flex items-center space-x-3 mb-8">
+                                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
+                                    <CalendarCheck className="text-white" size={24} />
+                                </div>
+                                <div>
+                                    <h2 className="text-2xl font-bold text-white">Attendance Input</h2>
+                                    <p className="text-gray-400 text-sm">Enter the number of classes</p>
+                                </div>
+                            </div>
+                            <div className="space-y-6">
+                                <AttendanceInput label="Classes Attended" value={attendedClasses} onChange={setAttendedClasses} icon="attended" />
+                                <AttendanceInput label="Classes Conducted" value={totalClasses} onChange={setTotalClasses} icon="conducted" />
+                            </div>
+                        </div>
+                        <div className="flex flex-col sm:flex-row gap-4">
+                            <button onClick={calculateAttendance} className="group relative flex-1 overflow-hidden bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-5 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-2xl">
+                                <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+                                <div className="relative flex items-center justify-center space-x-2">
+                                <Calculator size={20} />
+                                <span className="text-lg">Calculate Attendance</span>
+                                </div>
+                            </button>
+                            <button onClick={resetAttendanceForm} className="flex-1 backdrop-blur-xl bg-white/10 hover:bg-white/20 text-white font-semibold py-5 px-8 rounded-2xl transition-all duration-300 border border-white/20 hover:border-white/40">Reset All</button>
+                        </div>
+                    </div>
+
+                    {/* Result Section */}
+                    <div className="space-y-8">
+                        {showAttendanceResult ? (
+                            <div className="transform transition-all duration-700 ease-out animate-in slide-in-from-right">
+                                <AttendanceResultCard percentage={attendancePercentage} attended={attendedClasses} conducted={totalClasses} onReset={resetAttendanceForm} />
+                            </div>
+                        ) : (
+                            <div className="backdrop-blur-xl bg-white/5 rounded-3xl p-16 border border-white/10 text-center shadow-2xl">
+                                <div className="text-gray-400 mb-6">
+                                    <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-full flex items-center justify-center">
+                                        <CalendarCheck size={48} className="opacity-50" />
+                                    </div>
+                                    <h3 className="text-2xl font-semibold mb-4 text-white">Ready to Calculate</h3>
+                                    <p className="text-gray-400 max-w-md mx-auto leading-relaxed">Enter your class details to check your attendance status.</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
           </div>
         </div>
 

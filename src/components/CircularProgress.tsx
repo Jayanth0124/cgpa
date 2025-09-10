@@ -4,6 +4,7 @@ interface CircularProgressProps {
   percentage: number;
   size: number;
   strokeWidth: number;
+  label: string; // Add this new prop
   className?: string;
 }
 
@@ -11,6 +12,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
   percentage, 
   size, 
   strokeWidth, 
+  label, // Destructure the new prop
   className = "" 
 }) => {
   const radius = (size - strokeWidth) / 2;
@@ -57,7 +59,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
             {percentage.toFixed(1)}%
           </div>
           <div className="text-sm text-gray-400 mt-2 font-medium">
-            CGPA Score
+            {label} 
           </div>
         </div>
       </div>
