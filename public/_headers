@@ -1,0 +1,7 @@
+# Set caching rules for all pages
+/*
+  Cache-Control: no-cache
+
+# Cache assets with hashes in their filenames forever
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
