@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Timer shrink animation for notification modal */
+@keyframes timer-shrink {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+.animate-timer-shrink {
+  animation: timer-shrink 10s linear forwards;
+}

@@ -8,6 +8,7 @@ import AttendanceResultCard from './components/AttendanceResultCard';
 import TabButton from './components/TabButton';
 // --- Additions End ---
 import { downloadPDF, downloadImage } from './utils/exportUtils';
+import NotificationModal from './components/NotificationModal';
 
 // --- Additions Start ---
 type CalculatorMode = 'cgpa' | 'attendance';
@@ -388,6 +389,9 @@ function App() {
           </div>
         </footer>
       </div>
+
+      {/* Notification Modal */}
+      <NotificationModal />
     </div>
   );
 }
