@@ -125,8 +125,8 @@ function App() {
   };
   // --- Additions End ---
 
-  const handleDownloadPDF = () => {
-    downloadPDF(cgpa, totalSubjects, grades);
+  const handleDownloadPDF = async () => {
+    await downloadPDF(cgpa, totalSubjects, grades);
   };
 
   const handleDownloadImage = () => {
