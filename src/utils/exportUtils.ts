@@ -107,10 +107,13 @@ export const shareResultImage = async (elementId: string, shareData: ShareData) 
   if (!element) return;
 
   try {
+    // 1. Drop scale down to 2 to prevent mobile RAM crashes
+    const scale = 2; 
+
     // Generate high-quality branded canvas
     const canvas = await html2canvas(element, {
       backgroundColor: '#0f172a',
-      scale: 3,
+      scale: scale, 
       useCORS: true,
       logging: false,
     });
@@ -118,23 +121,20 @@ export const shareResultImage = async (elementId: string, shareData: ShareData) 
     // Add watermark/branding overlay
     const ctx = canvas.getContext('2d');
     if (ctx) {
-      const scale = 3; // Matches your html2canvas scale
-      
-      // 1. Scale the bar height appropriately so it looks right on high-res exports
+      // 2. Scale the bar height appropriately
       const barHeight = 80 * scale; 
       
-      // 2. Create a strict vertical gradient (x1, y1, x2, y2)
+      // 3. Create a strict vertical gradient (x1, y1, x2, y2)
       const gradient = ctx.createLinearGradient(0, canvas.height - barHeight, 0, canvas.height);
       
-      // 3. Start completely transparent (opacity 0) to avoid the "harsh line"
+      // 4. Start completely transparent to avoid the "harsh line"
       gradient.addColorStop(0, 'rgba(15, 23, 42, 0)');
-      // Fade into a solid dark color at the bottom to make the text pop
       gradient.addColorStop(1, 'rgba(15, 23, 42, 0.95)');
       
       ctx.fillStyle = gradient;
       ctx.fillRect(0, canvas.height - barHeight, canvas.width, barHeight);
 
-      // 4. Scale the text and positioning so it doesn't look microscopic on mobile
+      // 5. Scale the text and positioning based on the safe scale factor
       ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
       ctx.font = `bold ${16 * scale}px Inter, sans-serif`;
       ctx.textAlign = 'right';
