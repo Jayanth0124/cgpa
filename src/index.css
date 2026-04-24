@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+html, body {
+  /* Set the default browser background to match your dark theme */
+  background-color: #0f172a; /* This is Tailwind's slate-900 */
+  
+  /* Stop the mobile "pull-to-refresh" rubber band effect */
+  overscroll-behavior-y: none;
+  
+  /* Force hardware acceleration on the whole body */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Optional: Hide scrollbars for a cleaner app-like feel */
+::-webkit-scrollbar {
+  display: none;
+}
+
 /* Timer shrink animation for notification modal */
 @keyframes timer-shrink {
   from {
