@@ -118,23 +118,31 @@ export const shareResultImage = async (elementId: string, shareData: ShareData) 
     // Add watermark/branding overlay
     const ctx = canvas.getContext('2d');
     if (ctx) {
-      // Subtle branding bar at bottom
-      const barHeight = 50;
-      const gradient = ctx.createLinearGradient(0, canvas.height - barHeight, canvas.width, canvas.height);
-      gradient.addColorStop(0, 'rgba(15, 23, 42, 0.95)');
-      gradient.addColorStop(1, 'rgba(15, 23, 42, 0.8)');
+      const scale = 3; // Matches your html2canvas scale
+      
+      // 1. Scale the bar height appropriately so it looks right on high-res exports
+      const barHeight = 80 * scale; 
+      
+      // 2. Create a strict vertical gradient (x1, y1, x2, y2)
+      const gradient = ctx.createLinearGradient(0, canvas.height - barHeight, 0, canvas.height);
+      
+      // 3. Start completely transparent (opacity 0) to avoid the "harsh line"
+      gradient.addColorStop(0, 'rgba(15, 23, 42, 0)');
+      // Fade into a solid dark color at the bottom to make the text pop
+      gradient.addColorStop(1, 'rgba(15, 23, 42, 0.95)');
+      
       ctx.fillStyle = gradient;
       ctx.fillRect(0, canvas.height - barHeight, canvas.width, barHeight);
 
-      // Logo text branding
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-      ctx.font = 'bold 16px Inter, sans-serif';
+      // 4. Scale the text and positioning so it doesn't look microscopic on mobile
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+      ctx.font = `bold ${16 * scale}px Inter, sans-serif`;
       ctx.textAlign = 'right';
-      ctx.fillText('SIMATS CGPA Calculator', canvas.width - 20, canvas.height - 20);
+      ctx.fillText('SIMATS CGPA Calculator', canvas.width - (24 * scale), canvas.height - (36 * scale));
 
-      ctx.fillStyle = 'rgba(148, 163, 184, 0.6)';
-      ctx.font = '12px Inter, sans-serif';
-      ctx.fillText('simatscgpa.netlify.app', canvas.width - 20, canvas.height - 38);
+      ctx.fillStyle = 'rgba(148, 163, 184, 0.8)';
+      ctx.font = `${12 * scale}px Inter, sans-serif`;
+      ctx.fillText('simatscgpa.netlify.app', canvas.width - (24 * scale), canvas.height - (16 * scale));
     }
 
     const blob = await new Promise<Blob | null>((resolve) => {
