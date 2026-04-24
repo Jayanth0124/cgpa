@@ -32,15 +32,17 @@ const NotificationModal: React.FC = () => {
     };
   }, [closePopup]);
 
+  const mobileClasses = isActive
+    ? 'top-5 right-5 left-5 opacity-100 pointer-events-auto'
+    : 'top-[-500px] right-5 left-5 opacity-0 pointer-events-none';
+
+  const desktopClasses = isActive
+    ? 'md:right-10 md:opacity-100 md:pointer-events-auto'
+    : 'md:right-[-500px] md:opacity-0 md:pointer-events-none';
+
   return (
     <div
-      className={`fixed z-[9999] transition-all duration-500 ease-out
-        ${isActive
-          ? 'right-5 md:right-10 opacity-100 pointer-events-auto'
-          : 'right-[-500px] md:right-[-500px] opacity-0 pointer-events-none'
-        }
-        bottom-5 md:bottom-10 left-5 md:left-auto w-auto md:w-[420px]
-      `}
+      className={`fixed z-[9999] transition-all duration-500 ease-out w-auto md:w-[420px] md:bottom-10 md:left-auto md:top-auto ${mobileClasses} ${desktopClasses}`}
     >
       <div className="relative backdrop-blur-2xl bg-slate-900/80 border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
         {/* Top gradient line accent */}
